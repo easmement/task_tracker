@@ -17,6 +17,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.45.x' # Forces GitHub to use a version that matches your environment
           channel: 'stable'
           cache: true # Caches Flutter dependency downloads to speed up future runs
 
