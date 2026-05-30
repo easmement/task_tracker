@@ -1,0 +1,71 @@
+name: Flutter CI/CD
+
+# Trigger the workflow on push or pull request to the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Job 1: Lint and Test the code
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true # Caches Flutter dependency downloads to speed up future runs
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Verify Formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze Code
+        run: flutter analyze
+
+  # Job 2: Build the Deployment Binaries
+  build:
+    needs: analyze # Only run this job if the analyze job passes
+    # We use macos-latest so Xcode tools are natively available for the iOS build
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java (Required for Android Bundling)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      # 1. Build Android APK
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      # 2. Build iOS IPA (Compiles the Xcode workspace safely without code signing)
+      - name: Build iOS IPA
+        run: flutter build ipa --no-codesign
+
+      # 3. Upload Artifacts so you can download them from GitHub
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: task-tracker-builds
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/ios/ipa/*.ipa
