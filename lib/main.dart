@@ -62,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xFFF5F7FB), // Clean iOS-like background
       appBar: AppBar(
         title: const Text(
-          'Daily Tasks', 
-          style: TextStyle(fontWeight: FontWeight.bold)
+          'Daily Tasks',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 0,
@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          
+
           // Task List Section
           Expanded(
             child: _tasks.isEmpty
@@ -117,7 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       final task = _tasks[index];
                       return Card(
-                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 6,
+                        ),
                         elevation: 0,
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
@@ -127,7 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           leading: Checkbox(
                             value: task['isDone'],
                             activeColor: Colors.blueAccent,
-                            shape: const CircleBorder(), // iOS style circular checkbox
+                            shape:
+                                const CircleBorder(), // iOS style circular checkbox
                             onChanged: (_) => _toggleTask(index),
                           ),
                           title: Text(
@@ -137,11 +141,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: task['isDone']
                                   ? TextDecoration.lineThrough
                                   : TextDecoration.none,
-                              color: task['isDone'] ? Colors.grey : Colors.black87,
+                              color: task['isDone']
+                                  ? Colors.grey
+                                  : Colors.black87,
                             ),
                           ),
                           trailing: IconButton(
-                            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.redAccent,
+                            ),
                             onPressed: () {
                               setState(() {
                                 _tasks.removeAt(index);
