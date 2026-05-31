@@ -16,7 +16,8 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'beta' # Targets the cutting-edge ecosystem your pubspec requires
+          channel: 'any' # Dynamically checks all channels (stable/beta/dev/master)
+          flutter-version-file: pubspec.yaml # Automatically reads the version constraint from your code
           cache: true
 
       - name: Install Dependencies
@@ -45,7 +46,8 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'beta'
+          channel: 'any'
+          flutter-version-file: pubspec.yaml
           cache: true
 
       - name: Install Dependencies
@@ -67,3 +69,4 @@ jobs:
           path: |
             build/app/outputs/flutter-apk/app-release.apk
             build/ios/ipa/*.ipa
+
