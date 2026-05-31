@@ -1,6 +1,5 @@
 name: Flutter CI/CD
 
-# Trigger the workflow on push or pull request to the main branch
 on:
   push:
     branches: [ main ]
@@ -8,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  # Job 1: Lint and Test the code
+  # Job 1: Verify code health and formatting
   analyze:
     runs-on: ubuntu-latest
     steps:
@@ -17,9 +16,9 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.45.x' # Forces GitHub to use a version that matches your environment
+          flutter-version: '3.22.x'
           channel: 'stable'
-          cache: true # Caches Flutter dependency downloads to speed up future runs
+          cache: true
 
       - name: Install Dependencies
         run: flutter pub get
@@ -30,16 +29,15 @@ jobs:
       - name: Analyze Code
         run: flutter analyze
 
-  # Job 2: Build the Deployment Binaries
+  # Job 2: Build the binaries using a macOS runner for Xcode tools
   build:
-    needs: analyze # Only run this job if the analyze job passes
-    # We use macos-latest so Xcode tools are natively available for the iOS build
+    needs: analyze
     runs-on: macos-latest
-
+    
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java (Required for Android Bundling)
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -48,21 +46,22 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.22.x'
           channel: 'stable'
           cache: true
 
       - name: Install Dependencies
         run: flutter pub get
 
-      # 1. Build Android APK
+      # Build the Android APK
       - name: Build Android APK
         run: flutter build apk --release
 
-      # 2. Build iOS IPA (Compiles the Xcode workspace safely without code signing)
+      # Build the iOS IPA (Compiles the Xcode workspace safely without code signing)
       - name: Build iOS IPA
         run: flutter build ipa --no-codesign
 
-      # 3. Upload Artifacts so you can download them from GitHub
+      # Upload Artifacts to your GitHub Actions run page
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -70,3 +69,4 @@ jobs:
           path: |
             build/app/outputs/flutter-apk/app-release.apk
             build/ios/ipa/*.ipa
+
