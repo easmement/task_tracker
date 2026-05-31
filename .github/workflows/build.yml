@@ -16,8 +16,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.x'
-          channel: 'stable'
+          channel: 'beta' # Targets the cutting-edge ecosystem your pubspec requires
           cache: true
 
       - name: Install Dependencies
@@ -46,8 +45,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.x'
-          channel: 'stable'
+          channel: 'beta'
           cache: true
 
       - name: Install Dependencies
@@ -69,4 +67,3 @@ jobs:
           path: |
             build/app/outputs/flutter-apk/app-release.apk
             build/ios/ipa/*.ipa
-
